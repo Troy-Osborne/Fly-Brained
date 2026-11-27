@@ -1,0 +1,22 @@
+test_attach_offsets_are_mirrored (test_geometry.LegLateralityTests.test_attach_offsets_are_mirrored) ... ok
+test_each_leg_stays_on_its_own_side (test_geometry.LegLateralityTests.test_each_leg_stays_on_its_own_side) ... ok
+test_left_and_right_leg_geometry_reflects_when_gait_phase_matches (test_geometry.LegLateralityTests.test_left_and_right_leg_geometry_reflects_when_gait_phase_matches) ... ok
+test_wing_frames_are_mirrored_and_do_not_cross (test_geometry.WingMirrorTests.test_wing_frames_are_mirrored_and_do_not_cross) ... ok
+test_all_scenarios_finite (test_research.ResearchTests.test_all_scenarios_finite) ... ok
+test_custom_internal_channel (test_research.ResearchTests.test_custom_internal_channel) ... ok
+test_external_streams_obey_ablation (test_research.ResearchTests.test_external_streams_obey_ablation) ... ok
+test_food_requires_command_and_contact (test_research.ResearchTests.test_food_requires_command_and_contact) ... ok
+test_idle_has_no_automatic_gait_or_displacement (test_research.ResearchTests.test_idle_has_no_automatic_gait_or_displacement) ... ok
+test_invalid_motor_values (test_research.ResearchTests.test_invalid_motor_values) ... ok
+test_mask_does_not_leak_raw_vision (test_research.ResearchTests.test_mask_does_not_leak_raw_vision) ... ok
+test_motion_laterality (test_research.ResearchTests.test_motion_laterality) ... ok
+test_motor_loss_changes_motion_and_recovers (test_research.ResearchTests.test_motor_loss_changes_motion_and_recovers) ... ok
+test_prediction_alignment_and_missing (test_research.ResearchTests.test_prediction_alignment_and_missing) ... ok
+test_seed_and_command_replay (test_research.ResearchTests.test_seed_and_command_replay) ... ok
+test_stream_shapes_and_read_only (test_research.ResearchTests.test_stream_shapes_and_read_only) ... ok
+test_wind_sensor_local_frame (test_research.ResearchTests.test_wind_sensor_local_frame) ... ok
+
+----------------------------------------------------------------------
+Ran 17 tests in 0.624s
+
+OK

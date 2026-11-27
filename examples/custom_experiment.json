@@ -1,0 +1,13 @@
+{
+  "name": "wind_and_front_leg_failure",
+  "seed": 42,
+  "dt": 0.02,
+  "steps": 600,
+  "arena": {"wind": [0, 0], "moving_body": true},
+  "custom": {"novelty_signal": 0.0},
+  "events": [
+    {"start": 100, "stop": 200, "kind": "wind", "target": "z", "value": 2.5},
+    {"start": 250, "stop": 400, "kind": "motor_gain", "target": "front_left", "value": 0.0},
+    {"start": 450, "stop": 500, "kind": "custom", "target": "novelty_signal", "value": 1.0}
+  ]
+}
