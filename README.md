@@ -1,3 +1,26 @@
+# Fly-Brained
+
+Fly-Brained combines a controller-independent fruit fly body, a configurable environment and closed-loop neural experiments. The first integration checks whether front-foot contact produces a measurable turn away from an obstacle.
+
+From the repository root, install the headless dependencies and run:
+
+```sh
+python -m pip install -r requirements-headless.txt
+python -m unittest discover -s tests -v
+python -m experiments.touch_reflex
+```
+
+To use a separately obtained Spiking_Microcircuit_Composites checkout, add its root to your Python path (for example, `export PYTHONPATH=/path/to/Spiking_Microcircuit_Composites` on Linux or macOS), then run:
+
+```sh
+python -m experiments.touch_reflex --controller mcf
+python -m unittest discover -s tests -v
+```
+
+The adapter was exercised with MCF revision `6212fd1e3a6b3d7185d265dd46f1150eeffabe2f`. Each 20 ms body tick thresholds the two front-foot object loads, advances one two-channel relay step and maps the output to leg stroke rates and efforts. The motor mapping is hand-written. Each JSON line records the configuration, contact and response ticks, and final yaw. Negative yaw turns right. The initial gait phases place the two front feet at different forward positions, so obstacles are placed under each actual foot. These trials test response direction and timing. Learning, phase-balanced comparisons and resource scaling are future experiments.
+
+## Original v0.3 body guide
+
 # Drosophila embodied cognition testbed — v0.3
 
 **Research prototype, not a validated male fly biomechanics or neural simulation.**
