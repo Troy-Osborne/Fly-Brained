@@ -19,6 +19,14 @@ python -m unittest discover -s tests -v
 
 The adapter was exercised with MCF revision `6212fd1e3a6b3d7185d265dd46f1150eeffabe2f`. Each 20 ms body tick thresholds the two front-foot object loads, advances one two-channel relay step and maps the output to leg stroke rates and efforts. The motor mapping is hand-written. Each JSON line records the configuration, contact and response ticks, and final yaw. Negative yaw turns right. The initial gait phases place the two front feet at different forward positions, so obstacles are placed under each actual foot. These trials test response direction and timing. Learning, phase-balanced comparisons and resource scaling are future experiments.
 
+## Muscle–tendon comparison
+
+Run `python -m experiments.actuator_comparison > actuator_trials.jsonl` for 48 headless trials covering eight initial gait phases, two leg actuator models and three contact conditions. Compare final yaw and response timing within a phase and side. Each obstacle is placed at the corresponding front foot's starting location. Phase samples are deterministic conditions.
+
+In an experiment JSON, set `leg_actuator` to `series_elastic` and `initial_phase_rad` to the common six-leg phase offset. Existing configurations default to `legacy` and zero offset. These settings travel with the replay manifest.
+
+Each model leg has two opposing tensile branches. Active stroke and fatigue set target extension, knee excursion moves the branches in opposite directions and relaxation delays force transmission. Stance gates the signed tension difference into ground traction. The tension channel reports summed tensile load and tendon length reports slack length plus the larger tensile extension. The legacy tension channel uses a different proxy. Numerical constants are exploratory model units. Joint trajectories are still prescribed by the gait generator, so these experiments address force transmission during a prescribed stroke. Anatomical fits and force-driven joint motion remain open.
+
 ## Original v0.3 body guide
 
 # Drosophila embodied cognition testbed — v0.3

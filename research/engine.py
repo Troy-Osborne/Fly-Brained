@@ -12,7 +12,7 @@ class Engine:
     def __init__(self, experiment, controller=None, templates=DEFAULT_FLY_TEMPLATES, stream_source=None):
         self.experiment=experiment.validate(); self.controller=controller if controller is not None else Idle()
         self.stream_source=stream_source
-        self.body=Body(templates); self.rng=np.random.default_rng(experiment.seed); self.tick=0
+        self.body=Body(templates, experiment.leg_actuator, experiment.initial_phase_rad); self.rng=np.random.default_rng(experiment.seed); self.tick=0
         self.pending={}; self.last_streams={}; self.last_observation=None
 
     def step(self):
