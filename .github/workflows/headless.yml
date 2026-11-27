@@ -1,0 +1,19 @@
+name: Headless body experiments
+on: [pull_request]
+permissions:
+  contents: read
+jobs:
+  body:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -r requirements-headless.txt
+      - run: python -m unittest discover -s tests -v
+      - run: python -m experiments.actuator_comparison > actuator_trials.jsonl
+      - uses: actions/upload-artifact@v4
+        with:
+          name: actuator-trials
+          path: actuator_trials.jsonl

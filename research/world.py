@@ -32,7 +32,12 @@ class Experiment:
     noise: float = 0.
     custom: dict = field(default_factory=dict)
 
+    leg_actuator: str = 'legacy'
+    initial_phase_rad: float = 0.
+
     def validate(self):
+        if self.leg_actuator not in ('legacy', 'series_elastic') or not math.isfinite(self.initial_phase_rad):
+            raise ValueError('invalid leg actuator or initial gait phase')
         if not (0 < self.dt <= .05 and self.steps > 0 and self.noise >= 0): raise ValueError('invalid simulation parameters')
         if not math.isclose(self.dt*4000, round(self.dt*4000), abs_tol=1e-8): raise ValueError('dt must align to 4 kHz audio samples')
         from .interface import LEG_NAMES

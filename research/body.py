@@ -6,16 +6,23 @@ from templates.leg_geometry import local_leg_points
 from templates.wing_motion import WingMotionModel
 from .interface import LEG_NAMES, MotorCommand
 
+from .muscle_tendon import TendonPair
+
 class Body:
-    def __init__(self, templates=DEFAULT_FLY_TEMPLATES):
+    def __init__(self, templates=DEFAULT_FLY_TEMPLATES, leg_actuator='legacy', initial_phase_rad=0.):
         self.templates=templates
         self.pos=np.array([-2.8,0.]); self.vel=np.zeros(2); self.yaw=0.; self.omega=0.
-        self.phase=np.zeros(6); self.activation=np.zeros(6); self.fatigue=np.zeros(6)
+        self.phase=np.full(6, initial_phase_rad, dtype=float); self.activation=np.zeros(6); self.fatigue=np.zeros(6)
         self.wing=WingMotionModel(templates.wing_motion)
         self.internal=dict(hunger=.30,energy=.9,glucose_proxy=.78,octopamine_proxy=.22,nociception=0.,temperature_c=24.,hydration=.9,stress=0.,fatigue=0.)
         self.contacts=[]; self.legs={}; self.accel=np.zeros(2); self.food_consumed=0.
         self.last_command=MotorCommand().checked(); self.motor_gain=np.ones(6)
         self.refresh_legs()
+        self.tendons = None
+        if leg_actuator == 'series_elastic':
+            self.tendons = TendonPair([self.legs[n]['angle'] for n in LEG_NAMES])
+            for leg in self.legs.values():
+                leg.update(tension=0., tendon_length=TendonPair.slack_length)
 
     def rotation(self):
         c,s=math.cos(self.yaw),math.sin(self.yaw)
@@ -52,7 +59,18 @@ class Body:
         # Ground traction from stance stroke; no separate global drive or steering.
         # These are phenomenological forces, not a rigid-body or muscle solver.
         # Stance phase offsets are peripheral mechanics, not a decision policy.
-        forces=np.array([1.5*rates[i]*self.activation[i]*(1-self.fatigue[i])*self.motor_gain[i]*float(self.legs[n]['stance']) for i,n in enumerate(LEG_NAMES)])
+        if self.tendons is None:
+            forces=np.array([1.5*rates[i]*self.activation[i]*(1-self.fatigue[i])*self.motor_gain[i]*float(self.legs[n]['stance']) for i,n in enumerate(LEG_NAMES)])
+        else:
+            angles = [self.legs[n]['angle'] for n in LEG_NAMES]
+            tension = self.tendons.step(angles, rates, self.activation * (1-self.fatigue), dt)
+            forces = np.zeros(len(LEG_NAMES))
+            for i, name in enumerate(LEG_NAMES):
+                leg = self.legs[name]
+                leg['tension'] = float(tension[i].sum())
+                leg['tendon_length'] = float(self.tendons.slack_length + max(0., self.tendons.extension[i].max()))
+                if leg['stance']:
+                    forces[i] = tension[i, 0] - tension[i, 1]
         # A foot striking a solid object loses its nominal traction for this tick.
         # This is a planar contact proxy (not a resolved 3D contact impulse).
         for i,n in enumerate(LEG_NAMES):
