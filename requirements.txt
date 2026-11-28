@@ -1,2 +1,4 @@
 vpython>=7.6.5
 numpy>=1.26
+# VPython 7.6 imports pkg_resources at startup.
+setuptools>=68,<81
