@@ -13,6 +13,11 @@ jobs:
       - run: python -m pip install -r requirements-headless.txt
       - run: python -m unittest discover -s tests -v
       - run: python -m experiments.actuator_comparison > actuator_trials.jsonl
+      - run: python -m experiments.blocked_stroke_detection > detection.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: blocked-stroke-detection
+          path: detection.json
       - uses: actions/upload-artifact@v4
         with:
           name: actuator-trials

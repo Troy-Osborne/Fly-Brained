@@ -19,6 +19,12 @@ python -m unittest discover -s tests -v
 
 The adapter was exercised with MCF revision `6212fd1e3a6b3d7185d265dd46f1150eeffabe2f`. Each 20 ms body tick thresholds the two front-foot object loads, advances one two-channel relay step and maps the output to leg stroke rates and efforts. The motor mapping is hand-written. Each JSON line records the configuration, contact and response ticks, and final yaw. Negative yaw turns right. The initial gait phases place the two front feet at different forward positions, so obstacles are placed under each actual foot. These trials test response direction and timing. Learning, phase-balanced comparisons and resource scaling are future experiments.
 
+## Detecting a blocked stroke
+
+Run `python -m experiments.blocked_stroke_detection > detection.json` for 48 comparisons across four pulse/pose/load-distance protocols, four contact conditions and three observers. The command-aware observer predicts the next angular velocity from the previous angle, velocity and issued command. It has its own activation state and always predicts free motion. Reaction torque is used only for scoring. Compare it with the same observer given zero command and with velocity persistence. Alarm onset requires three consecutive residuals above 0.01 rad/s at a 1 ms step.
+
+The output includes first contact, first alarm, loaded and unloaded tick counts, true and false alarm ticks and velocity RMSE. First alarm can precede contact for an ablated observer. These are deterministic simulation cases. The full observer shares the simulator's free-motion equations and parameters; this measures observability with a known plant. Testing learned predictors, parameter mismatch and sensory noise are separate experiments.
+
 ## Front-leg joint bench and 3D playback
  
 ![Four VPython joint rigs under matched drive](docs/joint-bench.png)
