@@ -19,6 +19,22 @@ python -m unittest discover -s tests -v
 
 The adapter was exercised with MCF revision `6212fd1e3a6b3d7185d265dd46f1150eeffabe2f`. Each 20 ms body tick thresholds the two front-foot object loads, advances one two-channel relay step and maps the output to leg stroke rates and efforts. The motor mapping is hand-written. Each JSON line records the configuration, contact and response ticks, and final yaw. Negative yaw turns right. The initial gait phases place the two front feet at different forward positions, so obstacles are placed under each actual foot. These trials test response direction and timing. Learning, phase-balanced comparisons and resource scaling are future experiments.
 
+## Front-leg joint bench and 3D playback
+ 
+![Four VPython joint rigs under matched drive](docs/joint-bench.png)
+
+Run these commands from the repository root. The viewer opens in a browser window.
+
+```sh
+python -m pip install -r requirements.txt
+python -m experiments.blocked_joint --out joint-trace.json --view
+python -m experiments.blocked_joint --replay joint-trace.json --view
+```
+
+Omit `--view` for a headless run. The four rigs show the same motor pulse against free motion, a compliant stop, a rigid stop, and a rigid stop removed at 400 ms. Drag to orbit, scroll to zoom, pause playback or scrub by millisecond. The warm and cool lines represent opposing tendons; their thickness follows tension. The red marker shows the stop position.
+
+This standalone femur–tibia hinge has inertia, damping, antagonistic springs, activation lag and angular limits. Torque drives rotation independently of gait phase. Length, force and inertia use exploratory model units. The 3D geometry illustrates the measured states. The six-leg gait engine still uses its own actuators. The trace records joint angle in radians, angular velocity, command, activation, both tensions and mean obstacle reaction torque. Sample timestamps mark interval ends. These parameters have not been fitted to fly measurements.
+
 ## Muscle–tendon comparison
 
 Run `python -m experiments.actuator_comparison > actuator_trials.jsonl` for 48 headless trials covering eight initial gait phases, two leg actuator models and three contact conditions. Compare final yaw and response timing within a phase and side. Each obstacle is placed at the corresponding front foot's starting location. Phase samples are deterministic conditions.
